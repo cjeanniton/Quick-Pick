@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quick Pick</title>
+	
+<style>
+	body {background-color: #40CAFE}
+	.heading {text-decoration: underline; text-align: center}
+	hr {border-color: #000000}
+	.left_side {display: inline-block; margin: 20px; width: 600px; border: solid #000000}
+	
+</style>
+	
+</head>
+
+<body>
+		
+	<div class="heading"><h1>Massachusetts Lucky For Life</h1></div>
+	
+	<div class="left_side">
+		
+	<div class="rules">
+		<h2><center>How to Play: </center></h2>
+		<ul>
+			<p>Pick five (5) numbers, each between 1 and 48.</p>
+			<p>Pick one (1) number, between 1 and 18.</p>
+		</ul>
+	</div>
+	
+	<hr>
+	
+	<div class="Payout">
+		<h2><center>Payout Options: </center></h2>
+		<ul>
+			<p>5 matches + lucky ball = $7,000 per week for life!</p>
+			<p>5 matches = $25,000 per year for life!</p>
+			<p>4 matches + lucky ball = $5,000</p>
+			<p>4 matches = $200</p>
+			<p>3 matches + lucky ball = $150</p>
+			<p>3 matches = $20</p>
+			<p>2 matches + lucky ball = $25</p>
+			<p>2 matches = $3</p>
+			<p>1 match + lucky ball = $6</p>
+			<p>1 match = no prize</p>
+			<p>0 matches + lucky ball = $4</p>
+			<p>0 matches = no prize</p>
+		</ul>
+	</div>
+	
+	<hr>
+		
+	<div class="instructions">
+		<h3><center>Please Enter Five (5) Numbers Separated By Spaces: </center></h3>
+		<p>Ex: 1 2 3 4 5</p>
+		<input type="text" id="five_numbers" name="five_numbers"><br>
+		
+		<h3><center>Please Enter One (1) Luck Ball Number: </center></h3>
+		<p>Ex: 6</p>
+		<input type="text" id="lucky_ball" name="lucky_ball"><br>
+	</div>
+	
+	<p id="numbers"></p>
+	
+	<script language="javascript">
+		
+/*------------------- Following code is for generating random numbers -------------------*/
+		
+				
+		function compare_numbers()
+		{	
+			var num1, num2, num3, num4, num5, lucky_ball, value;
+			
+			num1 = Math.floor(Math.random() * 49);
+			num2 = Math.floor(Math.random() * 49);
+			num3 = Math.floor(Math.random() * 49);
+			num4 = Math.floor(Math.random() * 49);
+			num5 = Math.floor(Math.random() * 49);
+			lucky_ball = Math.floor(Math.random() * 19);
+			
+//			var numbers = [15, 3, 3, 30, 6];  // FOR TESTING
+//			lucky_ball = 0;
+			var numbers = [num1, num2, num3, num4, num5];
+//			alert("numbers are: " + numbers);
+			
+			function sort_array(numbers)
+			{
+				numbers.sort(function(a,b){return a-b}); // FOUND THIS ON STACK OVERFLOW
+//				alert ("numbers sorted are: " + numbers);
+				document.getElementById("winning_numbers").value = numbers; // DISPLAYS GENERATED NUMBERS
+				document.getElementById("winning_ball").value = lucky_ball;
+				return numbers.valueOf();
+			}
+			
+			sort_array(numbers);
+			
+			for (i = 0; i < 5; i ++)
+				{
+					if (numbers[i] == numbers[i + 1])
+						{
+							var index = numbers.indexOf(numbers[i]); // GET INDEX OF DUPLICATE NUMBER
+//							alert("index is: " + index);
+							numbers[index] = Math.floor(Math.random() * 49); // CHANGE NUMBER
+//							alert("new number is: " + numbers[index]);
+							numbers[i] = numbers[index];
+//							alert("new array is: " + numbers);
+						}
+					else
+						{
+							continue;
+						}
+				}
+			
+/*-------------- Following code is for comparing user numbers against generated numbers --------------*/
+			
+			var user_lucky_ball, user_numbers, user_array, matched, user_array_ball, lucky_ball_match;
+			
+			user_numbers = document.getElementById("five_numbers").value;
+			user_lucky_ball = document.getElementById("lucky_ball").value;
+			
+			user_array = user_numbers.split(" ");
+			user_array.sort();
+			
+			document.getElementById ("your_numbers").value = user_array; // DISPLAYS USERS NUMBERS
+			document.getElementById ("lucky_ball_display").value = user_lucky_ball; // DISPLAYS USER LUCKY BALL
+			
+			matched = 0; // SET MATCHES TO 0 INITIALLY
+			
+			for (i = 0; i <= 4; i++) // CHECKS IF THERE IS A MATCH BETWEEN GENERATED NUMBERS AND USER NUMBERS
+				{
+					for (j = 0; j <= 4; j ++)
+						{
+							if (numbers[i] == user_array[j])
+							{
+								matched ++;
+							}
+							else
+							{
+								continue;
+							}	
+						}
+				}
+			if (user_lucky_ball == lucky_ball) // CHECKS IF LUCKY BALL IS SAME
+				{
+					lucky_ball_match = 1;
+					document.getElementById ("lucky_ball_match").value = "Yes"; // DISPLAYS STATUS OF LUCKY BALL MATCH
+				}
+			else
+			{
+				lucky_ball_match = 0;
+				document.getElementById ("lucky_ball_match").value = "No"; // DISPLAYS STATUS OF LUCKY BALL MATCH
+			}
+			
+			document.getElementById ("matches").value = matched; // DISPLAYS NUMBER OF MATCHES
+			
+/*--------------------- Following code is for determining payout ---------------------*/
+			
+			if (matched == 0)
+				{
+					if (lucky_ball_match == 1)
+						{
+							document.getElementById ("payout").value = "$4";
+						}
+					else if (lucky_ball_match == 0)
+					{
+						document.getElementById ("payout").value = "No Payout";
+					}
+				}
+			if (matched == 1 && lucky_ball_match == 1)
+				{
+					document.getElementById ("payout").value = "$6";
+				}
+			else
+			{
+				document.getElementById ("payout").value = "No Payout";
+			}
+			
+			if (matched == 2)
+				{
+					if (lucky_ball_match == 1)
+						{
+							document.getElementById ("payout").value = "$25";
+						}
+					else
+					{
+						document.getElementById ("payout").value = "$3";
+					}
+				}
+			if (matched == 3)
+				{
+					if (lucky_ball_match == 1)
+						{
+							document.getElementById ("payout").value = "$150";
+						}
+					else
+					{
+						document.getElementById ("payout").value = "$20";
+					}
+				}
+			if (matched == 4)
+				{
+					if (lucky_ball_match == 1)
+						{
+							document.getElementById ("payout").value = "$5,000";
+						}
+					else
+						{
+							document.getElementById ("payout").value = "$200";
+						}
+				}
+			if (matched == 5)
+				{
+					if (lucky_ball_match == 1)
+						{
+							document.getElementById ("payout").value = "$7,000 per week for life!";
+						}
+					else
+						{
+							document.getElementById ("payout").value = "$25,000 per year for life!";
+						}
+				}
+			
+		}
+		
+	</script>
+	
+	<button type="button" onclick="compare_numbers()">Calculate Payout</button>
+		
+	<hr>
+<!-----------------		Following code is for displaying pertinent info ----------------->
+		
+	<div class="display">
+		<h3><center>Results: </center></h3>
+		Your Numbers, Sorted: 
+		<input type="text" id="your_numbers" name="your_numbers" readonly><br>
+		<p></p>
+		
+		Your Lucky Ball:
+		<input type="text" id="lucky_ball_display" name="lucky_ball_display" readonly><br>
+		<p></p>
+		
+		Today's Winning Numbers: 
+		<input type="text" id="winning_numbers" name="winning_numbers" readonly><br>
+		<p></p>
+		
+		Today's Winning Lucky Ball:
+		<input type="text" id="winning_ball" name="winning_ball" readonly><br>
+		<p></p>
+		
+		Number of Matches: 
+		<input type="text" id="matches" name="matches" readonly><br>
+		<p></p>
+		
+		Lucky Ball Match: 
+		<input type="text" id="lucky_ball_match" name="lucky_ball_match" readonly><br>
+		<p></p>
+		
+		Your Payout: 
+		<input type="text" id="payout" name="payout" readonly><br>
+		
+	</div>
+		
+	</div>
+	
+</body>
+</html>
